@@ -35,10 +35,12 @@ public class PostDAO extends BaseDAO<Post> {
 			selectByIdStatement.setInt(1, id);
 			selectByIdStatement.execute();
 			ResultSet resultSet = selectByIdStatement.getResultSet();
-			resultSet.next();
-			post.setId(resultSet.getInt("id"));
-			post.setPostAuthor(resultSet.getString("post_author"));
-			post.setPostTitle(resultSet.getString("post_title"));
+			if (resultSet.first()) {
+				post.setId(resultSet.getInt("id"));
+				post.setPostAuthor(resultSet.getString("post_author"));
+				post.setPostTitle(resultSet.getString("post_title"));
+			}
+			resultSet.close();
 		} catch (SQLException e) {
 			System.out.println("Caught SQLException while executing get by id: " + id);
 			e.printStackTrace();
@@ -79,8 +81,10 @@ public class PostDAO extends BaseDAO<Post> {
 		int count = 0;
 		try {
 			ResultSet resultSet = countStatement.executeQuery();
-			resultSet.next();
-			count = resultSet.getInt(1);
+			if (resultSet.first()) {
+				count = resultSet.getInt(1);
+			}
+			resultSet.close();
 		} catch (SQLException e) {
 			System.out.println("Caught SQLException while counting WP posts");
 			e.printStackTrace();
@@ -91,7 +95,6 @@ public class PostDAO extends BaseDAO<Post> {
 
 	@Override
 	public void close() {
-
 		try {
 			this.selectAllStatement.close();
 			this.selectByIdStatement.close();
@@ -100,6 +103,5 @@ public class PostDAO extends BaseDAO<Post> {
 			System.out.println("Could not close the DAO statements");
 			e.printStackTrace();
 		}
-		super.close();
 	}
 }

@@ -16,13 +16,6 @@ public abstract class BaseDAO<T> implements Dao<T> {
 		dbConnection = conn;
 	}
 
-	public void close() {
-		try {
-			dbConnection.close();
-		} catch (SQLException e) {
-			System.out.println("Caught exception while trying to close the dbConnection");
-			e.printStackTrace();
-		}
-	}
+	public abstract void close();
 
 }
