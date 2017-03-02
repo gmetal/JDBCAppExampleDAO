@@ -68,7 +68,7 @@ public class UserDAO extends BaseDAO<User> {
 
 			resultSet.close();
 		} catch (SQLException e) {
-			System.out.println("Caught SQLException while trying to retrieve all WP posts");
+			System.out.println("Caught SQLException while trying to retrieve all WP users");
 			e.printStackTrace();
 			return null;
 		}
@@ -86,7 +86,7 @@ public class UserDAO extends BaseDAO<User> {
 			}
 			resultSet.close();
 		} catch (SQLException e) {
-			System.out.println("Caught SQLException while counting WP posts");
+			System.out.println("Caught SQLException while counting WP users");
 			e.printStackTrace();
 			return -1;
 		}

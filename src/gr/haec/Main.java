@@ -6,6 +6,7 @@ import java.util.List;
 import gr.haec.db.DAOFactory;
 import gr.haec.db.dao.Dao;
 import gr.haec.model.Post;
+import gr.haec.model.Term;
 import gr.haec.model.User;
 
 public class Main {
@@ -13,10 +14,12 @@ public class Main {
 	public static void main(String[] args) {
 		Dao<Post> postDao = null;
 		Dao<User> userDao = null;
-
+		Dao<Term> termDao = null;
+		
 		try {
 			postDao = DAOFactory.getInstance().getPostsDao();
 			userDao = DAOFactory.getInstance().getUserDao();
+			termDao = DAOFactory.getInstance().getTermDao();
 		} catch (SQLException e) {
 			System.out.println("Could not connect to the database");
 			e.printStackTrace();
@@ -27,6 +30,8 @@ public class Main {
 		System.out.println("WP Database contains: " + postsCount + " posts");
 		int usersCount = userDao.countAll();
 		System.out.println("WP Database contains: " + usersCount + " users");
+		int termsCount = termDao.countAll();
+		System.out.println("WP Database contains: " + termsCount + " terms");
 		
 		System.out.println("Acquiring all wordpress posts");
 		List<Post> allPosts = postDao.getAll();
@@ -51,7 +56,19 @@ public class Main {
 		} else {
 			System.out.println("Could not retrieve wp users");
 		}
-		
+
+		System.out.println("Acquiring all wordpress terms");
+		List<Term> allTerms = termDao.getAll();
+
+		if (allTerms != null) {
+			for (int i = 0; i < allTerms.size(); i++) {
+				Term currentTerm = allTerms.get(i);
+				System.out.println(currentTerm);
+			}
+		} else {
+			System.out.println("Could not retrieve wp terms");
+		}
+
 		System.out.println("Retrieving post by id");
 		Post postById = postDao.get(4);
 
@@ -64,6 +81,13 @@ public class Main {
 
 		if (userById != null) {
 			System.out.println(userById);
+		}
+
+		System.out.println("Retrieving term by id");
+		Term termById = termDao.get(1);
+
+		if (termById != null) {
+			System.out.println(termById);
 		}
 
 		try {

@@ -10,8 +10,10 @@ import java.util.Map;
 
 import gr.haec.db.dao.Dao;
 import gr.haec.db.dao.PostDAO;
+import gr.haec.db.dao.TermDAO;
 import gr.haec.db.dao.UserDAO;
 import gr.haec.model.Post;
+import gr.haec.model.Term;
 import gr.haec.model.User;
 
 // Factory class to retrieve all DAOs
@@ -21,6 +23,7 @@ public class DAOFactory {
 	private static final String DB_URL = "jdbc:mysql://localhost/wordpress";
 	private static final String POST_DAO_KEY = "post.dao";
 	private static final String USER_DAO_KEY = "user.dao";
+	private static final String TERM_DAO_KEY = "term.dao";
 
 	// Attributes
 	private Connection dbConnection;
@@ -31,7 +34,7 @@ public class DAOFactory {
 
 	// Constructor
 	protected DAOFactory() throws SQLException {
-		dbConnection = DriverManager.getConnection(DB_URL, "wordpress_u", "wordpress_p");
+		//dbConnection = DriverManager.getConnection(DB_URL, "wordpress_u", "wordpress_p");
 		daoTable = new HashMap<String, BaseDAO>();
 	}
 
@@ -57,6 +60,14 @@ public class DAOFactory {
 		}
 		
 		return (Dao<User>) daoTable.get(USER_DAO_KEY);
+	}
+
+	public Dao<Term> getTermDao() throws SQLException {
+		if (!daoTable.containsKey(TERM_DAO_KEY)) {
+			daoTable.put(TERM_DAO_KEY, new TermDAO(dbConnection));
+		}
+		
+		return (Dao<Term>) daoTable.get(TERM_DAO_KEY);
 	}
 	
 	public void close() {
