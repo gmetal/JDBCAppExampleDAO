@@ -34,7 +34,7 @@ public class DAOFactory {
 
 	// Constructor
 	protected DAOFactory() throws SQLException {
-		//dbConnection = DriverManager.getConnection(DB_URL, "wordpress_u", "wordpress_p");
+		dbConnection = DriverManager.getConnection(DB_URL, "wordpress_u", "wordpress_p");
 		daoTable = new HashMap<String, BaseDAO>();
 	}
 
