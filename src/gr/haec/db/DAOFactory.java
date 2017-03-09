@@ -8,11 +8,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import gr.haec.db.dao.CategoryDAO;
 import gr.haec.db.dao.Dao;
 import gr.haec.db.dao.PostDAO;
+import gr.haec.db.dao.TagDAO;
 import gr.haec.db.dao.TermDAO;
 import gr.haec.db.dao.UserDAO;
+import gr.haec.model.Category;
 import gr.haec.model.Post;
+import gr.haec.model.Tag;
 import gr.haec.model.Term;
 import gr.haec.model.User;
 
@@ -24,6 +28,8 @@ public class DAOFactory {
 	private static final String POST_DAO_KEY = "post.dao";
 	private static final String USER_DAO_KEY = "user.dao";
 	private static final String TERM_DAO_KEY = "term.dao";
+	private static final String CATEGORY_DAO_KEY = "category.dao";
+	private static final String TAG_DAO_KEY = "tag.dao";
 
 	// Attributes
 	private Connection dbConnection;
@@ -68,6 +74,22 @@ public class DAOFactory {
 		}
 		
 		return (Dao<Term>) daoTable.get(TERM_DAO_KEY);
+	}
+	
+	public Dao<Category> getCategoryDao() throws SQLException {
+		if (!daoTable.containsKey(CATEGORY_DAO_KEY)) {
+			daoTable.put(CATEGORY_DAO_KEY, new CategoryDAO(dbConnection));
+		}
+		
+		return (Dao<Category>) daoTable.get(CATEGORY_DAO_KEY);
+	}
+	
+	public Dao<Tag> getTagDao() throws SQLException {
+		if (!daoTable.containsKey(TAG_DAO_KEY)) {
+			daoTable.put(TAG_DAO_KEY, new TagDAO(dbConnection));
+		}
+		
+		return (Dao<Tag>) daoTable.get(TAG_DAO_KEY);
 	}
 	
 	public void close() {

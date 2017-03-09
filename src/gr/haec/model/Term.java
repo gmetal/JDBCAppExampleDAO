@@ -7,10 +7,10 @@ public class Term {
 	public static final int DEFAULT_TERM_GROUP = 0;
 
 	// Attributes
-	private int id;
-	private String termName;
-	private String termSlug;
-	private int termGroup;
+	protected int id;
+	protected String termName;
+	protected String termSlug;
+	protected int termGroup;
 
 	// Constructor
 	public Term() {

@@ -8,35 +8,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gr.haec.db.BaseDAO;
-import gr.haec.model.Term;
+import gr.haec.model.Category;
+import gr.haec.model.Tag;
 
-public class TermDAO extends BaseDAO<Term> {
+public class TagDAO extends BaseDAO<Tag> {
 
 	private PreparedStatement selectByIdStatement;
 	private PreparedStatement selectAllStatement;
 	private PreparedStatement countStatement;
-
-	public TermDAO(Connection conn) throws SQLException {
+	
+	public TagDAO(Connection conn) throws SQLException {
 		super(conn);
+		
 		selectByIdStatement = dbConnection
-				.prepareStatement("SELECT term_id, name, slug, term_group FROM wp_terms WHERE term_id = ?;");
-		selectAllStatement = dbConnection.prepareStatement("SELECT term_id, name, slug, term_group FROM wp_terms;");
-		countStatement = dbConnection.prepareStatement("SELECT count(*) FROM wp_terms;");
+				.prepareStatement("SELECT terms.term_id, terms.name, terms.slug, terms.term_group FROM wp_terms terms"
+						+ " JOIN wp_term_taxonomy terms_taxonomy ON terms.term_id = terms_taxonomy.term_id "
+						+ "WHERE terms.term_id = ? AND terms_taxonomy.taxonomy = 'post_tag';");
+		selectAllStatement = dbConnection
+				.prepareStatement("SELECT terms.term_id, terms.name, terms.slug, terms.term_group FROM wp_terms terms"
+						+ " JOIN wp_term_taxonomy terms_taxonomy ON terms.term_id = terms_taxonomy.term_id "
+						+ "WHERE terms_taxonomy.taxonomy = 'post_tag';");
+		countStatement = dbConnection.prepareStatement("SELECT count(*) FROM wp_terms terms"
+				+ " JOIN wp_term_taxonomy terms_taxonomy ON terms.term_id = terms_taxonomy.term_id "
+				+ "WHERE terms_taxonomy.taxonomy = 'post_tag'");
 	}
 
 	@Override
-	public Term get(int id) {
-		Term term = new Term();
+	public Tag get(int id) {
+		Tag tag = new Tag();
 
 		try {
 			selectByIdStatement.setInt(1, id);
 			selectByIdStatement.execute();
 			ResultSet resultSet = selectByIdStatement.getResultSet();
 			if (resultSet.first()) {
-				term.setId(resultSet.getInt("term_id"));
-				term.setTermName(resultSet.getString("name"));
-				term.setTermSlug(resultSet.getString("slug"));
-				term.setTermGroup(resultSet.getInt("term_group"));
+				tag.setId(resultSet.getInt("term_id"));
+				tag.setTermName(resultSet.getString("name"));
+				tag.setTermSlug(resultSet.getString("slug"));
+				tag.setTermGroup(resultSet.getInt("term_group"));
 			}
 			resultSet.close();
 		} catch (SQLException e) {
@@ -45,24 +54,25 @@ public class TermDAO extends BaseDAO<Term> {
 			return null;
 		}
 
-		return term;
+		return tag;
+
 	}
 
 	@Override
-	public List<Term> getAll() {
+	public List<Tag> getAll() {
 		ResultSet resultSet;
-		List<Term> objectList = new ArrayList<>();
+		List<Tag> objectList = new ArrayList<>();
 
 		try {
 			resultSet = selectAllStatement.executeQuery();
 
 			while (resultSet.next()) {
-				Term term = new Term();
-				term.setId(resultSet.getInt("term_id"));
-				term.setTermName(resultSet.getString("name"));
-				term.setTermSlug(resultSet.getString("slug"));
-				term.setTermGroup(resultSet.getInt("term_group"));
-				objectList.add(term);
+				Tag tag = new Tag();
+				tag.setId(resultSet.getInt("term_id"));
+				tag.setTermName(resultSet.getString("name"));
+				tag.setTermSlug(resultSet.getString("slug"));
+				tag.setTermGroup(resultSet.getInt("term_group"));
+				objectList.add(tag);
 			}
 
 			resultSet.close();
